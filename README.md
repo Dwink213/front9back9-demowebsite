@@ -87,15 +87,15 @@ The Front9/Back9 extraction ensures uniqueness without sacrificing readability.
 ## Usage
 
 ### Web Demo (No Installation)
-1. Visit: https://calm-sand-0f158ae10.2.azurestaticapps.net
+1. Visit: https://lemon-pebble-067db5b0f.2.azurestaticapps.net/
 2. Enter your Azure subscription name
 3. Click "Generate Names"
 4. Export results as CSV
 
 ### Local Development
 ```bash
-git clone https://github.com/Dwink213/front9back9-azure-naming.git
-cd front9back9-azure-naming
+git clone [https://github.com/Dwink213/front9back9-demowebsite.git
+cd front9back9-demowebsite
 open index.html
 ```
 
