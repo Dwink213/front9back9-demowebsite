@@ -1,7 +1,6 @@
 # Front9/Back9 Algorithm - Azure Resource Naming
 
-**Live Demo:** [https://calm-sand-0f158ae10.2.azurestaticapps.net](https://calm-sand-0f158ae10.2.azurestaticapps.net)
-
+**Live Demo:** https://lemon-pebble-067db5b0f.2.azurestaticapps.net/
 A subscription-scoped naming convention for Azure resources that solves the challenge of inconsistent resource type constraints.
 
 ---
