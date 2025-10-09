@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front9/Back9 Algorithm - Azure Naming</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 25px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        .tagline {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .problem-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .problem-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .problem-box p {
+            color: #856404;
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .problem-box p:last-child {
+            margin-bottom: 0;
+        }
+        .input-section {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+        }
+        button.secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        button.secondary:hover {
+            background: #e8e8e8;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button.export {
+            background: #4caf50;
+            flex: 0 0 auto;
+            padding: 10px 16px;
+        }
+        button.export:hover {
+            box-shadow: 0 8px 16px rgba(76, 175, 80, 0.4);
+        }
+        .results {
+            margin-top: 15px;
+            display: none;
+        }
+        .results.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .identity-box {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+        }
+        .identity-box h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .identity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .identity-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .identity-item strong {
+            display: block;
+            color: #667eea;
+            margin-bottom: 3px;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        .identity-item code {
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .resource-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+        .resource-card.valid {
+            border-color: #4caf50;
+            background: #f1f8f4;
+        }
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .resource-type {
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #667eea;
+            font-size: 11px;
+        }
+        .status-icon {
+            font-size: 18px;
+        }
+        .resource-name {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 3px;
+            word-break: break-all;
+        }
+        .resource-meta {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.3;
+        }
+        .footer {
+            margin-top: 15px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .coming-soon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .coming-soon p {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Front9/Back9 Algorithm</h1>
+        <p class="tagline">Subscription-scoped naming for Azure resources</p>
+        <p style="text-align: left; color: #999; font-size: 12px; margin-bottom: 20px;">
+            Designed and Created by Dustin Winkler
+        </p>
+
+        <div class="problem-box">
+            <h3>The Problem</h3>
+            <p>Azure enforces inconsistent naming constraints across resource types—Storage Accounts require lowercase only (24 chars), KeyVaults allow alphanumeric and dashes (24 chars), and VMs cap at 15 characters due to the NetBIOS/Active Directory computer name limit. Traditional naming conventions either use unreadable GUIDs or create collisions across subscriptions at scale.</p>
+            
+            <h3>The Solution</h3>
+            <p>The Front9/Back9 algorithm extracts subscription identity (first 9 + last 9 characters) and adapts it to each resource type's constraints. This creates globally unique, human-readable names without external configuration databases.</p>
+            
+            <h3>Multi-Site Example</h3>
+            <p>Subscription-scoped resources (Resource Groups, KeyVaults, Storage Accounts) contain NO region codes—they serve all datacenters. Only VMs include region codes (az1/az2/az3) because they're physically located in specific datacenters. This prevents the common mistake of naming a Resource Group "RG-Production-EastUS" when it actually contains VMs in West US, Central US, and East US.</p>
+        </div>
+
+        <div class="input-section">
+            <label for="subName">Azure Subscription Name</label>
+            <input 
+                type="text" 
+                id="subName" 
+                placeholder="e.g., Your Long Company Name Production Services"
+                value="">
+        </div>
+
+        <div class="btn-group">
+            <button class="secondary" onclick="fillSample()">Sample Data</button>
+            <button onclick="generateNames()">Generate Names</button>
+            <button class="export" onclick="exportCSV()" id="exportBtn" style="display:none;">📥 Export CSV</button>
+        </div>
+
+        <div id="results" class="results">
+            <div class="identity-box">
+                <h3>Subscription Identity</h3>
+                <div class="identity-grid">
+                    <div class="identity-item">
+                        <strong>Front9</strong>
+                        <code id="front9"></code>
+                    </div>
+                    <div class="identity-item">
+                        <strong>Back9</strong>
+                        <code id="back9"></code>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 8px; color: #333; font-size: 14px;">Generated Resource Names</h3>
+            <div id="resourceList"></div>
+        </div>
+
+        <div class="footer">
+            <div class="coming-soon">
+                <p>🚀 Bicep Template Generator Coming Soon!</p>
+            </div>
+            <p>Created by <strong>Dustin Winkler</strong></p>
+            <p><a href="https://github.com/Dwink213" target="_blank">GitHub</a> | 
+               <a href="https://www.linkedin.com/in/dustin-winkler-nc/" target="_blank">LinkedIn</a></p>
+        </div>
+    </div>
+
+    <script>
+        let currentData = null;
+
+        function fillSample() {
+            document.getElementById('subName').value = 'Your Long Company Name Production Services';
+        }
+
+        function extractIdentity(subName) {
+            const cleaned = subName.replace(/[^a-zA-Z0-9]/g, '');
+            const front9 = cleaned.length >= 9 ? cleaned.substring(0, 9) : cleaned;
+            const back9 = cleaned.length >= 9 ? cleaned.substring(cleaned.length - 9) : cleaned;
+            return { front9, back9, cleaned };
+        }
+
+        function generateResourceGroupName(cleaned, typeCode = 'VM') {
+            if (cleaned.length <= 20) {
+                return `rg1-${cleaned}-${typeCode}`;
+            } else {
+                const front20 = cleaned.substring(0, 20);
+                const back20 = cleaned.substring(cleaned.length - 20);
+                return `rg1-${front20}-${typeCode}-${back20}`;
+            }
+        }
+
+        function generateKeyVaultName(front9, back9) {
+            return `kv1${front9}-${back9}`;
+        }
+
+        function generateStorageName(front9, back9) {
+            return `sa11${front9}${back9}`.toLowerCase();
+        }
+
+        function generateVMName(env = 'prd', region = 'az2', purpose = 'mfgapp', instance = 1) {
+            return `${env}${region}${purpose}${String(instance).padStart(2, '0')}`;
+        }
+
+        function validateName(name, maxLen) {
+            const valid = name.length <= maxLen;
+            return { valid, length: name.length, maxLen };
+        }
+
+        function getResourceMeta(type, resource) {
+            const base = `Length: ${resource.length}/${resource.maxLen} chars`;
+            const constraints = {
+                'resource_group': 'Max: 90 | Alphanumeric, dash, underscore, period',
+                'keyvault': 'Max: 24 | Alphanumeric, dash | Must start with letter',
+                'storage': 'Max: 24 | Lowercase letters and numbers ONLY',
+                'vm': 'Max: 15 | NetBIOS/AD limit | Cross-platform consistency',
+                'nic': 'Max: 80 | Alphanumeric, dash, underscore',
+                'disk_os': 'Max: 80 | Alphanumeric, dash, underscore',
+                'disk_data': 'Max: 80 | Alphanumeric, dash, underscore'
+            };
+            return `${base} | ${constraints[type] || ''}`;
+        }
+
+        function generateNames() {
+            const subName = document.getElementById('subName').value.trim();
+            
+            if (!subName) {
+                alert('Please enter a subscription name');
+                return;
+            }
+
+            const { front9, back9, cleaned } = extractIdentity(subName);
+            const rgName = generateResourceGroupName(cleaned);
+            const kvName = generateKeyVaultName(front9, back9);
+            const saName = generateStorageName(front9, back9);
+            const vmName = generateVMName();
+            const nicName = `nic-${vmName}-01`;
+            const diskOsName = `disk-${vmName}-os`;
+            const diskDataName = `disk-${vmName}-data`;
+
+            const resources = {
+                resource_group: { name: rgName, ...validateName(rgName, 90) },
+                keyvault: { name: kvName, ...validateName(kvName, 24) },
+                storage: { name: saName, ...validateName(saName, 24) },
+                vm: { name: vmName, ...validateName(vmName, 15) },
+                nic: { name: nicName, ...validateName(nicName, 80) },
+                disk_os: { name: diskOsName, ...validateName(diskOsName, 80) },
+                disk_data: { name: diskDataName, ...validateName(diskDataName, 80) }
+            };
+
+            currentData = {
+                subscription: subName,
+                front9,
+                back9,
+                resources
+            };
+
+            displayResults();
+            document.getElementById('exportBtn').style.display = 'block';
+        }
+
+        function displayResults() {
+            document.getElementById('front9').textContent = currentData.front9;
+            document.getElementById('back9').textContent = currentData.back9;
+
+            const resourceList = document.getElementById('resourceList');
+            resourceList.innerHTML = '';
+
+            const order = ['resource_group', 'keyvault', 'storage', 'vm', 'nic', 'disk_os', 'disk_data'];
+
+            order.forEach(key => {
+                const resource = currentData.resources[key];
+                const card = document.createElement('div');
+                card.className = `resource-card ${resource.valid ? 'valid' : 'invalid'}`;
+                
+                card.innerHTML = `
+                    <div class="resource-header">
+                        <span class="resource-type">${key.replace('_', ' ')}</span>
+                        <span class="status-icon">${resource.valid ? '✅' : '❌'}</span>
+                    </div>
+                    <div class="resource-name">${resource.name}</div>
+                    <div class="resource-meta">${getResourceMeta(key, resource)}</div>
+                `;
+
+                resourceList.appendChild(card);
+            });
+
+            document.getElementById('results').classList.add('show');
+        }
+
+        function exportCSV() {
+            if (!currentData) return;
+
+            const rows = [
+                ['Resource Type', 'Name', 'Length', 'Max Length', 'Valid'],
+                ['Subscription', currentData.subscription, '-', '-', '-'],
+                ['Front9', currentData.front9, '-', '-', '-'],
+                ['Back9', currentData.back9, '-', '-', '-'],
+                ['', '', '', '', '']
+            ];
+
+            Object.entries(currentData.resources).forEach(([type, resource]) => {
+                rows.push([
+                    type.replace('_', ' ').toUpperCase(),
+                    resource.name,
+                    resource.length,
+                    resource.maxLen,
+                    resource.valid ? 'YES' : 'NO'
+                ]);
+            });
+
+            const csv = rows.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `azure-names-${Date.now()}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
