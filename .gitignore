@@ -19,6 +19,14 @@ dist/
 .vscode/
 .idea/
 
+# Python virtual environments
+.venv/
+venv/
+__pycache__/
+
+# Development documentation
+Ai-Augmented Development/
+
 # OS files
 .DS_Store
 Thumbs.db
