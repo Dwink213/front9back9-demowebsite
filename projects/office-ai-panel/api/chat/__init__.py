@@ -110,17 +110,17 @@ def generate_response(character_id: str, question: str, round_number: int, conte
                     f"{r['character_info']['name']}: \"{r['response']}\""
                     for r in context if r
                 ])
-                system_prompt = f"{character['system_prompt']}\n\nThe question is: \"{question}\"\n\nHere's what others have said so far:\n\n{prev_responses}\n\nNow give YOUR reaction. You can agree, disagree, build on their points, or take it in a different direction. Stay true to your personality!"
+                system_prompt = f"{character['system_prompt']}\n\nThe question is: \"{question}\"\n\nHere's what others have said so far:\n\n{prev_responses}\n\nNow give YOUR reaction. You can agree, disagree, build on their points, or take it in a different direction. Stay true to your personality!\n\nIMPORTANT: Keep your response to 50 words or less. Be concise and punchy!"
             else:
                 # Speaking first
-                system_prompt = f"{character['system_prompt']}\n\nGive your immediate reaction to this question. Be opinionated and true to your personality. You're speaking first!"
+                system_prompt = f"{character['system_prompt']}\n\nGive your immediate reaction to this question. Be opinionated and true to your personality. You're speaking first!\n\nIMPORTANT: Keep your response to 50 words or less. Be concise and punchy!"
         else:
             # Round 2: Consensus building
             all_responses = "\n\n".join([
                 f"{r['character_info']['name']} (Round {r.get('round', 1)}): \"{r['response']}\""
                 for r in context if r and r['character'] != character_id
             ])
-            system_prompt = f"{character['system_prompt']}\n\nYou've heard the full discussion:\n\n{all_responses}\n\nNow it's time to build consensus. In 2-5 sentences, respond to what others said and work toward finding common ground or a solution. Stay in character but show you've listened. Be concise!"
+            system_prompt = f"{character['system_prompt']}\n\nYou've heard the full discussion:\n\n{all_responses}\n\nNow it's time to build consensus. In 2-3 sentences, respond to what others said and work toward finding common ground or a solution. Stay in character but show you've listened.\n\nIMPORTANT: Keep your response to 50 words or less. Be concise!"
 
         # Call OpenAI API
         completion = client.chat.completions.create(
@@ -130,7 +130,7 @@ def generate_response(character_id: str, question: str, round_number: int, conte
                 {"role": "user", "content": question}
             ],
             temperature=0.7,
-            max_tokens=500
+            max_tokens=100  # ~50 words limit
         )
 
         response_text = completion.choices[0].message.content
