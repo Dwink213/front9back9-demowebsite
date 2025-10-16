@@ -163,7 +163,7 @@
                             <div class="phase-actions">
                                 <h4>Strategic Decisions:</h4>
                                 <ul>
-                                    <li>Requirements analysis: monitor 7k backup events, identify failures</li>
+                                    <li>Requirements analysis: monitor 7k events, identify failures</li>
                                     <li>Service evaluation: Functions vs App Service, SQL vs NoSQL</li>
                                     <li>Architectural decisions: serverless, managed identity, test-driven approach</li>
                                 </ul>
@@ -352,7 +352,7 @@
                                 <ul>
                                     <li>Timer trigger every 15 minutes</li>
                                     <li>Use DefaultAzureCredential (managed identity)</li>
-                                    <li>Read secret named in env var RUBRIK_CLIENT_ID_SECRET_NAME</li>
+                                    <li>Read secret named in env var VENDOR_CLIENT_ID_SECRET_NAME</li>
                                     <li>Log first 5 chars only for security</li>
                                     <li>Wrap in try/except with clear error logging</li>
                                     <li>Include inline comments</li>
@@ -392,8 +392,8 @@
 def collect_data():
     credential = DefaultAzureCredential()
     kv_client = SecretClient(vault_url=..., credential=credential)
-    client_id = kv_client.get_secret("RubrikClientId").value
-    client_secret = kv_client.get_secret("RubrikClientSecret").value
+    client_id = kv_client.get_secret("VendorClientId").value
+    client_secret = kv_client.get_secret("VendorClientSecret").value
 
     response = requests.post(
         f"{api_url}/client_token",
@@ -406,12 +406,12 @@ def collect_data():
                     <div class="code-block">
                         <div class="code-header">After (Iterative Refinement)</div>
                         <pre><code class="language-python"># Extracted reusable function
-def get_rubrik_token():
-    """Acquire Rubrik API token using KeyVault credentials"""
+def get_vendor_token():
+    """Acquire Vendor API token using KeyVault credentials"""
     credential = DefaultAzureCredential()
     kv_client = SecretClient(vault_url=..., credential=credential)
-    client_id = kv_client.get_secret("RubrikClientId").value
-    client_secret = kv_client.get_secret("RubrikClientSecret").value
+    client_id = kv_client.get_secret("VendorClientId").value
+    client_secret = kv_client.get_secret("VendorClientSecret").value
 
     response = requests.post(
         f"{api_url}/client_token",
@@ -420,7 +420,7 @@ def get_rubrik_token():
     return response.json()["access_token"]
 
 def collect_data():
-    token = get_rubrik_token()  # Now reusable
+    token = get_vendor_token()  # Now reusable
     # ... focus on data collection logic</code></pre>
                     </div>
                 </div>
@@ -484,14 +484,14 @@ secret_value = kv_client.get_secret(secret_name).value</code></pre>
                     <div class="technique-example">
                         <div class="technique-bad">
                             <strong>❌ Vague:</strong>
-                            <p>"Make a backup monitoring system"</p>
+                            <p>"Make a monitoring system"</p>
                         </div>
                         <div class="technique-good">
                             <strong>✅ Specific:</strong>
                             <p>"Create an Azure Function (Python 3.11) that:</p>
                             <ul>
                                 <li>Timer trigger: 0 0 * * * * (hourly)</li>
-                                <li>Authenticates to Rubrik API using KeyVault credentials</li>
+                                <li>Authenticates to Vendor API using KeyVault credentials</li>
                                 <li>Executes this GraphQL query: [paste query]</li>
                                 <li>Handles pagination (100 events/page)</li>
                                 <li>Writes to Table Storage with PartitionKey=objectType</li>
@@ -766,7 +766,7 @@ secret_value = kv_client.get_secret(secret_name).value</code></pre>
             </div>
 
             <div class="project-context">
-                <p><em>This portfolio showcases a production system processing real backup data in a live Azure environment, demonstrating practical application of AI-augmented development principles in enterprise settings.</em></p>
+                <p><em>This portfolio showcases a production system processing real operational data in a live Azure environment, demonstrating practical application of AI-augmented development principles in enterprise settings.</em></p>
             </div>
         </div>
     </section>
