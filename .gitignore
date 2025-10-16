@@ -1,0 +1,21 @@
+# Bicep Builder source and development files
+BicepBuilder_web_wizard/
+
+# Node modules
+node_modules/
+
+# Build directories (except committed builds)
+build/
+dist/
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
