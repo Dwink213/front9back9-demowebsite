@@ -2,7 +2,7 @@
 BicepBuilder_web_wizard/
 
 # Office AI Panel (original implementation - not for static hosting)
-Office-AI-Panel/
+/Office-AI-Panel/
 
 # Node modules
 node_modules/
