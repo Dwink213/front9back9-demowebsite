@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Job Search - AI-Powered Semantic Job Matching</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #5a67d8;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+        .back-link:hover {
+            color: #4c51bf;
+            text-decoration: underline;
+        }
+        h1 {
+            color: #1a202c;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .dev-approach {
+            display: inline-block;
+            background: rgba(90,103,216,0.08);
+            color: #5a67d8;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border: 1px solid rgba(90,103,216,0.15);
+        }
+        .subtitle {
+            color: #4a5568;
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .stat-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #5a67d8;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .stat-label {
+            color: #718096;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        .content-section {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #1a202c;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #5a67d8;
+            padding-bottom: 12px;
+        }
+        h3 {
+            color: #2d3748;
+            font-size: 1.3em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .tech-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #5a67d8;
+        }
+        .tech-item h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .tech-item p {
+            color: #718096;
+            font-size: 0.95em;
+            margin: 0;
+        }
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .feature-card {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-card h4 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 1.15em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-icon {
+            font-size: 1.5em;
+        }
+        .feature-card p {
+            color: #718096;
+            font-size: 0.95em;
+            margin: 0;
+        }
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        .code-block code {
+            color: #9ae6b4;
+        }
+        .code-comment {
+            color: #a0aec0;
+        }
+        .architecture-diagram {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+        .architecture-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .flow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 150px;
+            text-align: center;
+        }
+        .flow-arrow {
+            font-size: 2em;
+            color: #5a67d8;
+        }
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .highlight-box p {
+            margin: 0;
+            color: #856404;
+        }
+        ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        li {
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+        }
+        .footer p {
+            color: white;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 12px;
+            transition: all 0.2s ease;
+            opacity: 0.92;
+        }
+        .footer a:hover {
+            opacity: 1;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 12px;
+            }
+            .header, .content-section {
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .tech-stack, .features-list {
+                grid-template-columns: 1fr;
+            }
+            .architecture-flow {
+                flex-direction: column;
+            }
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="../../index.html" class="back-link">← Back to Portfolio</a>
+            <h1>RAG Job Search</h1>
+            <span class="dev-approach">Human Architected • AI-Augmented Development</span>
+            <p class="subtitle">AI-powered semantic job matching with RAG, vector search, and intelligent enrichment</p>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">3,500+</span>
+                    <span class="stat-label">Lines of Code</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">85%</span>
+                    <span class="stat-label">Production Ready</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">$3-5</span>
+                    <span class="stat-label">Monthly Cost</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">90%</span>
+                    <span class="stat-label">Cost Reduction</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Project Overview</h2>
+            <p>
+                Built a production-ready AI job matching system that uses RAG (Retrieval-Augmented Generation),
+                semantic search, and LLM-powered reasoning to intelligently match job seekers with AI/ML roles.
+                The system goes beyond keyword matching by understanding context, culture fit, and market compensation.
+            </p>
+
+            <div class="highlight-box">
+                <p><strong>Key Achievement:</strong> Optimized from $50-100/month to $3-5/month through smart caching,
+                model selection (GPT-3.5-Turbo vs GPT-4), and selective LLM analysis - achieving 90% cost reduction
+                while maintaining high-quality matches.</p>
+            </div>
+
+            <h3>The Challenge</h3>
+            <p>
+                Traditional job search relies on keyword matching, which misses nuanced requirements like culture fit,
+                work arrangement preferences, and market-competitive compensation. Needed an intelligent system that:
+            </p>
+            <ul>
+                <li>Understands semantic meaning beyond keywords</li>
+                <li>Provides explainable AI reasoning for each match</li>
+                <li>Enriches jobs with culture and salary data</li>
+                <li>Operates cost-effectively at scale</li>
+                <li>Automates job discovery from multiple sources</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>Architecture</h2>
+
+            <div class="architecture-diagram">
+                <h3 style="margin-bottom: 20px;">RAG Pipeline Flow</h3>
+                <div class="architecture-flow">
+                    <div class="flow-step">
+                        <strong>1. Ingestion</strong>
+                        <p style="font-size: 0.85em; margin-top: 10px;">Job postings → Text chunks → Vector embeddings</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <strong>2. Retrieval</strong>
+                        <p style="font-size: 0.85em; margin-top: 10px;">User profile → Similarity search → Top matches</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <strong>3. Enrichment</strong>
+                        <p style="font-size: 0.85em; margin-top: 10px;">Culture matching + Salary analysis</p>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <strong>4. Reasoning</strong>
+                        <p style="font-size: 0.85em; margin-top: 10px;">GPT-3.5 explains why jobs match</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Key Components</h3>
+
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <h4>Vector Database</h4>
+                    <p>ChromaDB for persistent vector storage with OpenAI embeddings (text-embedding-3-small)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>LLM Orchestration</h4>
+                    <p>LangChain for RAG pipelines, embeddings, and LLM chains with GPT-3.5-Turbo</p>
+                </div>
+                <div class="tech-item">
+                    <h4>API Layer</h4>
+                    <p>FastAPI with async endpoints, lifespan management, and middleware for logging/monitoring</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Automation</h4>
+                    <p>APScheduler for background job scraping (twice daily at 6am/6pm UTC)</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Web Scraping</h4>
+                    <p>Playwright + BeautifulSoup for company career pages and job boards</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Caching</h4>
+                    <p>Diskcache for 6-hour match result caching (90% cost reduction on repeat searches)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Core Features</h2>
+
+            <div class="features-list">
+                <div class="feature-card">
+                    <h4><span class="feature-icon">🎯</span> Semantic Matching</h4>
+                    <p>Vector similarity search finds jobs based on meaning, not just keywords. Understands "ML Engineer" relates to "Machine Learning Scientist".</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">🧠</span> LLM Reasoning</h4>
+                    <p>GPT-3.5-Turbo analyzes top 5 matches and explains why each job fits the candidate's profile with specific highlights.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">🎨</span> Culture Matching</h4>
+                    <p>Scores companies (0-1) based on alignment with user's culture preferences (Research-driven, Fast-paced, etc.).</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">💰</span> Salary Analysis</h4>
+                    <p>Compares listed compensation against market data from levels.fyi with variance analysis (above/below/competitive).</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">🔄</span> Automated Scraping</h4>
+                    <p>Background scheduler scrapes 13 sources (10 company sites + 3 job boards) twice daily, with auto-ingestion.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">⚡</span> Smart Caching</h4>
+                    <p>MD5-based cache with 6-hour TTL. Identical searches hit cache instantly, reducing API costs by 90%.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">🛡️</span> Rate Limiting</h4>
+                    <p>Protects against abuse with 20 searches per 15-min window. Tracks usage and enforces monthly cost limits.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h4><span class="feature-icon">📊</span> Production Logging</h4>
+                    <p>Structured JSON logs with request IDs, performance tracking, and daily rotation for debugging and monitoring.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2>Technical Deep Dive</h2>
+
+            <h3>Service-Based Architecture</h3>
+            <p>
+                Refactored from monolithic to service-oriented architecture with dependency injection for maintainability and testability:
+            </p>
+
+<div class="code-block"><code-comment># Service layer with protocol-based interfaces</code-comment>
+<code>class ISearchService(Protocol):
+    def search(self, query: str, k: int) -> List[Document]: ...
+    def ingest(self, jobs: List[Job]) -> IngestionStats: ...
+
+class SearchService(BaseService):
+    """Vector search using ChromaDB + OpenAI embeddings"""
+    def __init__(self):
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        self.vectorstore = Chroma(persist_directory="./vectorstore")
+
+    def search(self, query: str, k: int = 20) -> List[Document]:
+        <code-comment># Semantic similarity search</code-comment>
+        return self.vectorstore.similarity_search(query, k=k)
+
+class JobMatcherService:
+    """Main orchestration service"""
+    def __init__(self, search: ISearchService, enrichment: IEnrichmentService):
+        self.search = search
+        self.enrichment = enrichment
+        self.cache = CacheService(ttl=21600)  <code-comment># 6 hours</code-comment></code>
+</div>
+
+            <h3>Cost Optimization Strategy</h3>
+            <p>Achieved 90% cost reduction through multiple strategies:</p>
+
+<div class="code-block"><code-comment># 1. Model Selection: GPT-3.5-Turbo (90% cheaper than GPT-4)</code-comment>
+<code>llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0.3)
+
+<code-comment># 2. Selective Analysis: Only top 5 jobs get LLM reasoning</code-comment>
+top_jobs = ranked_jobs[:5]
+for job in top_jobs:
+    reasoning = llm.invoke(analysis_prompt)
+
+<code-comment># 3. Smart Caching: 6-hour TTL with MD5 hash keys</code-comment>
+cache_key = hashlib.md5(json.dumps(profile).encode()).hexdigest()
+if cached := cache.get(cache_key):
+    return cached  <code-comment># 90% of searches hit cache</code-comment>
+
+<code-comment># 4. Incremental Embeddings: Only embed new jobs</code-comment>
+existing_ids = set(vectorstore.get()['ids'])
+new_jobs = [j for j in jobs if j.id not in existing_ids]</code>
+</div>
+
+            <h3>Enrichment Pipeline</h3>
+            <p>Culture and salary data enrichment with confidence scoring:</p>
+
+<div class="code-block"><code>@lru_cache(maxsize=1)  <code-comment># Singleton pattern for data loading</code-comment>
+def load_culture_data() -> Dict:
+    with open("data/company_culture.json") as f:
+        return json.load(f)
+
+def match_culture(company: str, preferences: List[str]) -> CultureMatch:
+    culture_db = load_culture_data()
+    company_data = culture_db.get(company, {})
+
+    <code-comment># Calculate trait alignment score</code-comment>
+    matching_traits = set(preferences) & set(company_data.get("traits", []))
+    score = len(matching_traits) / len(preferences) if preferences else 0
+
+    return CultureMatch(
+        score=score,
+        matching_traits=list(matching_traits),
+        confidence="High" if company in culture_db else "Low"
+    )</code>
+</div>
+
+            <h3>Background Automation</h3>
+            <p>Automated job discovery with scheduler integration:</p>
+
+<div class="code-block"><code>scheduler = AsyncIOScheduler()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    <code-comment># Startup: Initialize services and scheduler</code-comment>
+    matcher = JobMatcherService()
+
+    <code-comment># Schedule scraping twice daily</code-comment>
+    scheduler.add_job(scrape_and_ingest, CronTrigger(hour=6))
+    scheduler.add_job(scrape_and_ingest, CronTrigger(hour=18))
+    scheduler.start()
+
+    yield
+
+    <code-comment># Shutdown: Cleanup</code-comment>
+    scheduler.shutdown()
+    matcher.cleanup()</code>
+</div>
+        </div>
+
+        <div class="content-section">
+            <h2>Production Readiness</h2>
+
+            <h3>Error Handling & Monitoring</h3>
+            <ul>
+                <li><strong>Custom Exceptions:</strong> 10+ exception types (RateLimitError, EmbeddingError, VectorStoreError, ScrapingError) with rich context</li>
+                <li><strong>Structured Logging:</strong> JSON logs with request IDs, performance metrics, and cost tracking</li>
+                <li><strong>Request Tracking:</strong> Unique request IDs for distributed tracing</li>
+                <li><strong>Performance Monitoring:</strong> Alerts for slow requests (>5s) and high API usage</li>
+            </ul>
+
+            <h3>Retry Logic & Resilience</h3>
+<div class="code-block"><code>@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(min=1, max=10),
+    retry=retry_if_exception_type((RateLimitError, TimeoutError))
+)
+def fetch_with_retry(url: str) -> str:
+    <code-comment># Exponential backoff for API failures</code-comment>
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+    return response.text</code>
+</div>
+
+            <h3>Configuration Management</h3>
+            <ul>
+                <li><strong>Environment Validation:</strong> Checks API keys, creates directories on startup</li>
+                <li><strong>Centralized Config:</strong> All magic values in constants.py (pricing, rate limits, model settings)</li>
+                <li><strong>YAML Config:</strong> External configuration for scraping, matching, and cost optimization</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2>Skills Demonstrated</h2>
+
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <h4>AI/ML Architecture</h4>
+                    <p>RAG pipeline design, vector databases, embedding strategies, LLM orchestration</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Backend Development</h4>
+                    <p>FastAPI, async/await patterns, dependency injection, service-oriented architecture</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Data Engineering</h4>
+                    <p>ETL pipelines, web scraping, data enrichment, incremental updates</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Cost Optimization</h4>
+                    <p>Smart caching, model selection, selective processing, rate limiting</p>
+                </div>
+                <div class="tech-item">
+                    <h4>Production Engineering</h4>
+                    <p>Structured logging, error handling, monitoring, performance optimization</p>
+                </div>
+                <div class="tech-item">
+                    <h4>System Design</h4>
+                    <p>Scalable architecture, background jobs, lifespan management, clean code patterns</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Created by <strong>Dustin Winkler</strong></p>
+            <p>Human Architected • AI-Augmented Development</p>
+            <div>
+                <a href="https://github.com/Dwink213" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/dustin-winkler-nc/" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
