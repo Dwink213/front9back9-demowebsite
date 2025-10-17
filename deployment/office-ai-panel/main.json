@@ -1,0 +1,187 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.38.5.1644",
+      "templateHash": "17556275897769635880"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources"
+      }
+    },
+    "baseName": {
+      "type": "string",
+      "defaultValue": "office-ai-panel",
+      "metadata": {
+        "description": "Base name for resources"
+      }
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "prod",
+      "metadata": {
+        "description": "Environment name (dev, prod)"
+      }
+    },
+    "openAiApiKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "OpenAI API Key"
+      }
+    },
+    "corsOrigins": {
+      "type": "string",
+      "defaultValue": "https://lemon-pebble-067db5b0f.2.azurestaticapps.net",
+      "metadata": {
+        "description": "CORS allowed origins (comma-separated)"
+      }
+    }
+  },
+  "variables": {
+    "functionAppName": "[format('{0}-{1}-func', parameters('baseName'), parameters('environment'))]",
+    "appServicePlanName": "[format('{0}-{1}-plan', parameters('baseName'), parameters('environment'))]",
+    "storageAccountName": "[replace(format('{0}{1}sa', parameters('baseName'), parameters('environment')), '-', '')]",
+    "applicationInsightsName": "[format('{0}-{1}-ai', parameters('baseName'), parameters('environment'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-01-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2023-01-01",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y"
+      },
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[variables('applicationInsightsName')]",
+      "location": "[parameters('location')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2023-01-01",
+      "name": "[variables('functionAppName')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp,linux",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "reserved": true,
+        "siteConfig": {
+          "linuxFxVersion": "Python|3.11",
+          "appSettings": [
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-01-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', variables('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-01-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(variables('functionAppName'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "python"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(resourceId('Microsoft.Insights/components', variables('applicationInsightsName')), '2020-02-02').ConnectionString]"
+            },
+            {
+              "name": "OPENAI_API_KEY",
+              "value": "[parameters('openAiApiKey')]"
+            },
+            {
+              "name": "CORS_ORIGINS",
+              "value": "[parameters('corsOrigins')]"
+            }
+          ],
+          "cors": {
+            "allowedOrigins": "[split(parameters('corsOrigins'), ',')]",
+            "supportCredentials": false
+          },
+          "ftpsState": "Disabled",
+          "minTlsVersion": "1.2"
+        },
+        "httpsOnly": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', variables('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "functionAppName": {
+      "type": "string",
+      "value": "[variables('functionAppName')]"
+    },
+    "functionAppUrl": {
+      "type": "string",
+      "value": "[format('https://{0}', reference(resourceId('Microsoft.Web/sites', variables('functionAppName')), '2023-01-01').defaultHostName)]"
+    },
+    "functionAppId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', variables('functionAppName'))]"
+    }
+  }
+}
