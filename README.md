@@ -1,6 +1,6 @@
 # Front9/Back9 Algorithm - Azure Resource Naming
 
-**Live Demo:** [https://calm-sand-0f158ae10.2.azurestaticapps.net](https://calm-sand-0f158ae10.2.azurestaticapps.net)
+**Live Demo:** [https://www.awacs.ai/demos/front9back9.html](https://www.awacs.ai/demos/front9back9.html)
 
 A subscription-scoped naming convention for Azure resources that solves the challenge of inconsistent resource type constraints.
 
@@ -88,15 +88,15 @@ The Front9/Back9 extraction ensures uniqueness without sacrificing readability.
 ## Usage
 
 ### Web Demo (No Installation)
-1. Visit: https://calm-sand-0f158ae10.2.azurestaticapps.net
+1. Visit: https://www.awacs.ai/demos/front9back9.html
 2. Enter your Azure subscription name
 3. Click "Generate Names"
 4. Export results as CSV
 
 ### Local Development
 ```bash
-git clone https://github.com/Dwink213/front9back9-azure-naming.git
-cd front9back9-azure-naming
+git clone https://github.com/Dwink213/front9back9-demowebsite.git
+cd front9back9-demowebsite
 open index.html
 ```
 
@@ -104,15 +104,16 @@ open index.html
 
 ## Roadmap
 
-### ✅ Phase 1: Algorithm Demo (Current)
+### Phase 1: Algorithm Demo
 - Single-page HTML demo
 - Name generation and validation
 - CSV export
 
-### 🚧 Phase 2: Bicep Template Generator (Coming Soon)
-- Multi-page wizard
-- Download working Bicep templates
-- Pre-deployment validation
+### Phase 2: Bicep Deployment Wizard (Live)
+- 8-page React wizard at [builder.awacs.ai](https://builder.awacs.ai)
+- Download working Bicep templates (Key Vault, VM, Storage, Log Analytics)
+- Pre-deployment validation with deploy.ps1 script
+- Full case study at [awacs.ai/case-studies/front9back9.html](https://www.awacs.ai/case-studies/front9back9.html)
 
 ---
 
