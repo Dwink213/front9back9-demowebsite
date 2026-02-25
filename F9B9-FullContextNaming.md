@@ -947,7 +947,7 @@ function Get-KeyVaultName {
         [int]$Number = 1
     )
     
-    $cleanName = $SubscriptionName -replace '\s', ''
+    $cleanName = $SubscriptionName -replace '[^a-zA-Z0-9]', ''
     
     # Pattern: kv{#}{first9}-{last9}
     $first9 = $cleanName.Substring(0, [Math]::Min(10, $cleanName.Length))
@@ -1008,7 +1008,7 @@ function Get-StorageAccountName {
         [int]$TypeCode = 11
     )
     
-    $cleanName = ($SubscriptionName -replace '\s', '').ToLower()
+    $cleanName = ($SubscriptionName -replace '[^a-zA-Z0-9]', '').ToLower()
     
     # Pattern: sa{type2}{first9}{last9}
     $first9 = $cleanName.Substring(0, [Math]::Min(9, $cleanName.Length))
@@ -1540,7 +1540,7 @@ Verify subscription name length allows the pattern
 Test:
 
 $subName = "Align Infra ITIO Computing Dev"
-$cleanName = $subName -replace '\s', ''
+$cleanName = $subName -replace '[^a-zA-Z0-9]', ''
 Write-Host "Clean name: $cleanName"
 Write-Host "Length: $($cleanName.Length)"
 
